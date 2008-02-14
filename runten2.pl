@@ -5,15 +5,15 @@ use strict;
 # since the last run. Add those stats to the database.
 
 use TenCommon;
-use ApiKey;
+use TenDB;
 
 my $pageclusterlen = 10;
 my $pagelen = 500;
 
 sub GetHighestDate {
-    my $dbh = OpenDB;
-    my ($highestdate, $toppage) = HighestDateInDB $dbh;
-    CloseDB $dbh;
+    my $dbh = new TenDB;
+    my ($highestdate, $toppage) = $dbh->highestdate;
+    undef $dbh;
     ($highestdate, $toppage);
 }
 

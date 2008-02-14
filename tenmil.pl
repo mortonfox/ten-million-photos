@@ -7,6 +7,7 @@ use strict;
 use Getopt::Long;
 use FileHandle;
 use TenCommon;
+use TenDB;
 use ApiKey;
 use Encode;
 
@@ -103,12 +104,13 @@ sub main {
 	$stats .= "$ownercounts{$key},$key,$ownernames{$key}\n";
     }
 
-    my $dbh = OpenDB;
-    AddToDB($dbh, 
+    my $dbh = new TenDB;
+    $dbh->add(
 	$startpagenum, $endpagenum,
 	$lowestdate, $highestdate, 
-	$stats);
-    CloseDB $dbh;
+	$stats
+    );
+    undef $dbh;
 }
 
 my $pagelen = 500;

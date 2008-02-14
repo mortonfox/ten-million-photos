@@ -6,6 +6,7 @@ use File::DosGlob;
 use Encode;
 
 use TenCommon;
+use TenDB;
 use ApiKey;
 
 sub glob_args {
@@ -34,9 +35,9 @@ sub GetCount {
 }
 
 sub main {
-    my $dbh = OpenDB;
-    my $owners = OwnerStatsFromDB $dbh;
-    CloseDB $dbh;
+    my $dbh = new TenDB;
+    my $owners = $dbh->ownerstats;
+    undef $dbh;
 
     my @topusers = (sort { $b->{count} <=> $a->{count} } values %$owners) [0..149];
 

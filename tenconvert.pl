@@ -8,6 +8,7 @@ use FileHandle;
 use File::DosGlob;
 
 use TenCommon;
+use TenDB;
 
 sub glob_args {
     map { File::DosGlob::glob $_ } @_;
@@ -34,15 +35,15 @@ sub ProcessFiles {
 
 	$fh->close;
 
-	AddToDB($dbh, $startpage, $endpage, $lowdate, $highdate, $stats);
+	$dbh->add($startpage, $endpage, $lowdate, $highdate, $stats);
     }
 }
 
-my $dbh = OpenDB;
+my $dbh = new TenDB;
 # Much faster to turn AutoCommit off if adding many records.
-$dbh->{AutoCommit} = 0;
+$dbh->{dbh}->{AutoCommit} = 0;
 ProcessFiles($dbh, glob_args @ARGV);
-$dbh->commit;
-CloseDB $dbh;
+$dbh->{dbh}->commit;
+undef $dbh;
 
 __END__
