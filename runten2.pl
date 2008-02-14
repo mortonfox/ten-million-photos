@@ -8,6 +8,7 @@ use TenCommon;
 use ApiKey;
 
 my $pageclusterlen = 10;
+my $pagelen = 500;
 
 sub GetHighestDate {
     my $dbh = OpenDB;
@@ -17,14 +18,14 @@ sub GetHighestDate {
 }
 
 sub main {
-    my $totalpages = GetTotalPages;
+    my $totalpages = GetTotalPages $pagelen;
     print "Total pages = $totalpages\n";
 
     my ($highestdate, $toppage) = GetHighestDate();
     print "Highest date = $highestdate, Top page = $toppage\n";
 
     my $highestpage = ($highestdate ? 
-	FindPage($totalpages, $highestdate) : 
+	FindPage($totalpages, $highestdate, $pagelen) : 
 	$totalpages);
 
     while (1) {

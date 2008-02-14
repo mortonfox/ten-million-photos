@@ -140,6 +140,7 @@ sub CloseDB {
     $dbh->disconnect;
 }
 
+# Add a record to the database.
 sub AddToDB {
     my $dbh = shift;
 
@@ -155,6 +156,7 @@ sub AddToDB {
 	or die $sth->errstr;
 }
 
+# Get the most recent date in the database.
 sub HighestDateInDB {
     my $dbh = shift;
 
@@ -177,6 +179,7 @@ sub HighestDateInDB {
     ($highestdate, $toppage);
 }
 
+# Calculate aggregate stats for everyone.
 sub OwnerStatsFromDB {
     my $dbh = shift;
 
@@ -208,22 +211,18 @@ sub OwnerStatsFromDB {
     \%owners;
 }
 
-BEGIN {
-    my $pagelen = 500;
+# How many pages are there in the pool?
+sub GetTotalPages {
+    my $pagelen = shift;
+    my ($totalpages, undef, undef, undef) = GetPage($groupid, 1, $pagelen);
+    $totalpages;
+}
 
-    # These two functions assume that $pagelen is 500. Isolate them to this
-    # block.
-
-    sub GetTotalPages {
-	my ($totalpages, undef, undef, undef) = GetPage($groupid, 1, $pagelen);
-	$totalpages;
-    }
-
-    sub GetDateRange {
-	my $pagenum = shift;
-	my (undef, $lodate, $hidate, undef) = GetPage($groupid, $pagenum, $pagelen);
-	($lodate, $hidate);
-    }
+sub GetDateRange {
+    my $pagenum = shift;
+    my $pagelen = shift;
+    my (undef, $lodate, $hidate, undef) = GetPage($groupid, $pagenum, $pagelen);
+    ($lodate, $hidate);
 }
 
 # Do binary search to find the page number containing a specific date.
@@ -231,13 +230,14 @@ sub FindPage {
     my $lower = 1;
     my $upper = shift;
     my $date = shift;
+    my $pagelen = shift;
 
     print "Binary search: low=$lower upr=$upper Looking for date $date...\n";
 
     while (1) {
 	my $mid = int(($lower + $upper) / 2);
 
-	my ($lodate, $hidate) = GetDateRange($mid);
+	my ($lodate, $hidate) = GetDateRange($mid, $pagelen);
 
 	print "Binary search: low=$lower upr=$upper mid=$mid Dates $lodate to $hidate...\n";
 	if ($date > $hidate) {

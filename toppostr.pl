@@ -9,6 +9,8 @@ use TenCommon;
 use ApiKey;
 use Encode;
 
+my $pagelen = 500;
+
 sub report {
     my $fh = shift;
     my $title = shift;
@@ -29,7 +31,7 @@ sub report {
 }
 
 sub main {
-    my $totalpages = GetTotalPages;
+    my $totalpages = GetTotalPages $pagelen;
     print "Total pages = $totalpages\n";
 
     my $ONEDAY = 24 * 60 * 60;
@@ -41,7 +43,7 @@ sub main {
     my %daycounts;
     my %daynames;
 
-    my $highestpage = FindPage($totalpages, $weekago);
+    my $highestpage = FindPage($totalpages, $weekago, $pagelen);
 
     for my $pagenum (reverse 1..$highestpage) {
 #	print "Scanning page $pagenum of $highestpage...\n";
