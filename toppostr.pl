@@ -23,7 +23,7 @@ sub report {
 
     my @keys = sort { $counts->{$b} <=> $counts->{$a} } keys %$counts;
     for my $i (0 .. $rows - 1) {
-	print $fh $i + 1, ". $names->{$keys[$i]}: $counts->{$keys[$i]}\n";
+	print $fh $i + 1, ". $names->{$keys[$i]}: $counts->{$keys[$i]} (<a href=\"http://www.flickr.com/photos/$keys[$i]\">photos</a> | <a href=\"http://www.flickr.com/groups/10millionphotos/pool/$keys[$i]\">in pool</a>)\n";
     }
 
     print $fh "\n";

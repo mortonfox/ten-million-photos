@@ -61,7 +61,7 @@ sub main {
     for my $user (@topusers) {
 	$lineno++;
 	my $name = encode("iso-8859-1", $user->{name});
-	print $fh "$lineno. $name: $user->{count}\n";
+	print $fh "$lineno. $name: $user->{count} (<a href=\"http://www.flickr.com/photos/$user->{owner}\">photos</a> | <a href=\"http://www.flickr.com/groups/10millionphotos/pool/$user->{owner}\">in pool</a>)\n";
     }
 
     $fh->close;
