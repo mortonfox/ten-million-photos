@@ -17,6 +17,7 @@ use XML::Simple;
 use LWP::UserAgent;
 use Time::HiRes qw(usleep);
 use Encode;
+use HTML::Entities;
 
 use ApiKey;
 
@@ -161,8 +162,10 @@ sub CountPhotos {
 
 	    my $owner = $photo->{owner};
 	    unless (defined $crec->{counts}{$owner}) {
+		# $crec->{names}{$owner} = 
+		#     encode("iso-8859-1", $photo->{ownername});
 		$crec->{names}{$owner} = 
-		    encode("iso-8859-1", $photo->{ownername});
+		    encode_entities($photo->{ownername});
 		$crec->{counts}{$owner} = 0;
 	    }
 	    $crec->{counts}{$owner}++;

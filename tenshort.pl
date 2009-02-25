@@ -4,6 +4,7 @@ use strict;
 use FileHandle;
 use File::DosGlob;
 use Encode;
+use HTML::Entities;
 
 use TenCommon;
 use TenDB;
@@ -60,7 +61,8 @@ sub main {
     $lineno = 0;
     for my $user (@topusers) {
 	$lineno++;
-	my $name = encode("iso-8859-1", $user->{name});
+	#my $name = encode("iso-8859-1", $user->{name});
+	my $name = encode_entities($user->{name});
 	print $fh "$lineno. $name: $user->{count} (<a href=\"http://www.flickr.com/photos/$user->{owner}\">photos</a> | <a href=\"http://www.flickr.com/groups/10millionphotos/pool/$user->{owner}\">in pool</a>)\n";
     }
 
