@@ -48,23 +48,23 @@ sub FlickrRetry {
 # Generate a list of photos from the Flickr query response.
 sub GenPhotoList {
     my $response = shift;
+    my @photos;
+    my $pages;
 
-    my $xmlp = new XML::Simple;
-    my $xm = $xmlp->XMLin($response->{_content}, forcearray=>['photo']);
-
-    my $photos = $xm->{photos};
-    print "Page $photos->{page} of $photos->{pages}...\n";
-
-    my $photolist = $photos->{photo};
-    my @photoarr;
-
-    for my $id (keys %{$photolist}) {
-	my $photo = $photolist->{$id};
-	$photo->{id} = $id;
-	$photo->{url} = "http://www.flickr.com/photos/$photo->{owner}/$photo->{id}";
-	push @photoarr, $photo;
+    for my $node (@{$response->{tree}{children}}) {
+	if (defined $node->{name} and $node->{name} eq "photos") {
+	    $pages = $node->{attributes}{pages};
+	    for my $node2 (@{$node->{children}}) {
+		if (defined $node2->{name} and $node2->{name} eq "photo") {
+		    my $photo = $node2->{attributes};
+		    $photo->{url} = "http://www.flickr.com/photos/$photo->{owner}/$photo->{id}";
+		    push @photos, $node2->{attributes};
+		}
+	    }
+	}
     }
-    ( $photos->{pages}, \@photoarr );
+
+    ( $pages, \@photos );
 }
 
 # Get highest and lowest values of the dateadded field.

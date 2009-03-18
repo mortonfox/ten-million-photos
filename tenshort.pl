@@ -10,6 +10,8 @@ use TenCommon;
 use TenDB;
 use ApiKey;
 
+use Data::Dumper;
+
 sub glob_args {
     map { File::DosGlob::glob $_ } @_;
 }
@@ -28,11 +30,22 @@ sub GetCount {
 	});
     die "Error: $response->{error_message}\n" unless $response->{success};
 
-    my $xmlp = new XML::Simple;
-    my $xm = $xmlp->XMLin($response->{_content});
-    my $photos = $xm->{photos};
+    my $pages;
+    my $ownername;
 
-    ( $photos->{pages}, $photos->{photo}{ownername} );
+    for my $node (@{$response->{tree}{children}}) {
+	if (defined $node->{name} and $node->{name} eq "photos") {
+	    $pages = $node->{attributes}{pages};
+
+	    for my $node2 (@{$node->{children}}) {
+		if (defined $node2->{name} and $node2->{name} eq "photo") {
+		    $ownername = $node2->{attributes}{ownername};
+		}
+	    }
+	}
+    }
+
+    ( $pages, $ownername );
 }
 
 sub main {
