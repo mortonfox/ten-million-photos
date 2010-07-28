@@ -107,6 +107,12 @@ sub GetPage {
 sub GetTotalPages {
     my $pagelen = shift;
     my ($totalpages, undef, undef, undef) = GetPage($groupid, 1, $pagelen);
+
+    if ($totalpages == 0) {
+	warn "Failed to get total pages from Flickr API. Using estimated number.\n";
+	$totalpages = 15000;
+    }
+
     $totalpages;
 }
 

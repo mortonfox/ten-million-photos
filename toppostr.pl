@@ -45,8 +45,10 @@ sub main {
 
     my $highestpage = FindPage($totalpages, $weekago, $pagelen);
 
+    print "highestpage = $highestpage\n";
+
     for my $pagenum (reverse 1..$highestpage) {
-#	print "Scanning page $pagenum of $highestpage...\n";
+	print "Scanning page $pagenum of $highestpage...\n";
 	CountPhotos($groupid, $pagenum, $pagelen, [
 	    {
 		mindate => $weekago,
